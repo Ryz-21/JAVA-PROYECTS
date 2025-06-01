@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Página de inicio</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+
+<body class="container py-5">
+    <h1 class="display-4 mb-4">¡Bienvenido a Spring Boot!</h1>
+    <p class="lead">En este texto te introduciremos al sistema creado en Spring Boot.</p>
+    <h4 class="display-6 mb-3">Formulario para manejar datos</h4>
+
+    <!-- Formulario para agregar nuevo registro -->
+    <form method="post" action="/procesar">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Campo 1</label>
+                <input type="text" class="form-control" name="campo1" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label>Campo 2</label>
+                <input type="text" class="form-control" name="campo2" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label>Campo 3</label>
+                <input type="text" class="form-control" name="campo3" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label>Campo 4</label>
+                <input type="text" class="form-control" name="campo4" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </form>
+
+    <hr>
+
+    <h4 class="mt-4">Datos agregados:</h4>
+   <table class="table table-bordered table-striped mt-3">
+    <thead class="thead-dark">
+    <tr>
+        <th>ID</th> <!-- Nueva columna -->
+        <th>Campo 1</th>
+        <th>Campo 2</th>
+        <th>Campo 3</th>
+        <th>Campo 4</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="registro, iterStat : ${datos}">
+        <td th:text="${registro.id}">1</td> <!-- Mostrar ID -->
+        <td th:text="${registro.campo1}">Campo 1</td>
+        <td th:text="${registro.campo2}">Campo 2</td>
+        <td th:text="${registro.campo3}">Campo 3</td>
+        <td th:text="${registro.campo4}">Campo 4</td>
+        <td>
+                <!-- Botón Eliminar -->
+                <form th:action="@{/eliminar}" method="post" style="display:inline;">
+                    <input type="hidden" name="index" th:value="${iterStat.index}" />
+                    <button class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+
+                <!-- Botón Editar -->
+                <button class="btn btn-warning btn-sm" type="button"
+                        th:attr="data-toggle='collapse', data-target='#editarForm__' + ${iterStat.index}">
+                    Editar
+                </button>
+            </td>
+        </tr>
+
+        <!-- Formulario de edición -->
+        <tr class="collapse" th:id="'editarForm__' + ${iterStat.index}" th:each="registro, iterStat : ${datos}">
+            <td colspan="5">
+                <form th:action="@{/modificar}" method="post">
+                    <input type="hidden" name="index" th:value="${iterStat.index}" />
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="campo1" th:value="${registro.campo1}" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="campo2" th:value="${registro.campo2}" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="campo3" th:value="${registro.campo3}" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="campo4" th:value="${registro.campo4}" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">Guardar cambios</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Bootstrap JS + jQuery para colapsar formularios -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
